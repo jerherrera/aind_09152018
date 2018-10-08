@@ -71,18 +71,35 @@ def naked_twins(values):
     #             for xltr in values[box1]: # Reassign 
     #                 values = assign_value(values, peer_id, values[peer_id].replace(xltr,''))
     # return values
+    
+    # # Loop through all the units
+    # for unit in unitlist:
+    #     # find all boxes with pairs within the unit
+    #     pair_boxes = [box for box in unit if len(values[box]) == 2]
+    #     # combine pairwise finding only those which are true pairs
+    #     if len(peer_boxes) == 2:
+    #         box1, box2 = peer_boxes[0], peer_boxes[1]
+    #         # If there are only 
+    #         if box1[0] == box2[0]:
+    #             for u in unit:
+    #                 if len(values[u]) > 2:
+    #                     # Eliminate the naked twins as possibilities for their peers
+    #                     n, t = box1[0][0], box1[0][1]
+    #                     assign_value(values, u, values[u].replace(n, ''))
+    #                     assign_value(values, u, values[u].replace(t, ''))
+    # return values
 
-    for box in values:
-        if len(values[box]) == 2:
-            for peer in peers[box]:
-                if values[box] == values[peer]:
-                    # Change the values of the twins
-                    total_peers = set(peers[box]) & set(peers[peer])
-                    for peer_2_change in total_peers:
-                        if len(values[peer_2_change]) > 2:
-                            values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][0],''))
-                            values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][1],''))
-    return values
+    # for box in values:
+    #     if len(values[box]) == 2:
+    #         for peer in peers[box]:
+    #             if values[box] == values[peer]:
+    #                 # Change the values of the twins
+    #                 total_peers = set(peers[box]) & set(peers[peer])
+    #                 for peer_2_change in total_peers:
+    #                     if len(values[peer_2_change]) > 2:
+    #                         values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][0],''))
+    #                         values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][1],''))
+    # return values
 
 
 def eliminate(values):
