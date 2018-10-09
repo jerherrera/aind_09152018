@@ -14,45 +14,7 @@ unitlist = row_units + column_units + square_units + diagonal_units
 units = extract_units(unitlist, boxes)
 peers = extract_peers(units, boxes)
 
-
 def naked_twins(values):
-    """Eliminate values using the naked twins strategy.
-
-    The naked twins strategy says that if you have two or more unallocated boxes
-    in a unit and there are only two digits that can go in those two boxes, then
-    those two digits can be eliminated from the possible assignments of all other
-    boxes in the same unit.
-
-    Parameters
-    ----------
-    values(dict)
-        a dictionary of the form {'box_name': '123456789', ...}
-
-    Returns
-    -------
-    dict
-        The values dictionary with the naked twins eliminated from peers
-
-    Notes
-    -----
-    Your solution can either process all pairs of naked twins from the input once,
-    or it can continue processing pairs of naked twins until there are no such
-    pairs remaining -- the project assistant test suite will accept either
-    convention. However, it will not accept code that does not process all pairs
-    of naked twins from the original input. (For example, if you start processing
-    pairs of twins and eliminate another pair of twins before the second pair
-    is processed then your code will fail the PA test suite.)
-
-    The first convention is preferred for consistency with the other strategies,
-    and because it is simpler (since the reduce_puzzle function already calls this
-    strategy repeatedly).
-
-    See Also
-    --------
-    Pseudocode for this algorithm on github:
-    https://github.com/udacity/artificial-intelligence/blob/master/Projects/1_Sudoku/pseudocode.md
-    """
-
     # # Collect all possible twins from the Sudoku.
     # possible_twins = [box for box in values if len(values[box]) == 2]
     # true_twins = []
@@ -72,16 +34,31 @@ def naked_twins(values):
     #                 values = assign_value(values, peer_id, values[peer_id].replace(xltr,''))
     # return values
 
-    for box in values:
-        if len(values[box]) == 2:
-            for peer in peers[box]:
-                if values[box] == values[peer]:
-                    # Change the values of the twins
-                    total_peers = set(peers[box]) & set(peers[peer])
-                    for peer_2_change in total_peers:
-                        if len(values[peer_2_change]) > 2:
-                            values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][0],''))
-                            values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][1],''))
+    # for box in values:
+    #     if len(values[box]) == 2:
+    #         for peer in peers[box]:
+    #             if values[box] == values[peer]:
+    #                 # Change the values of the twins
+    #                 total_peers = set(peers[box]) & set(peers[peer])
+    #                 for peer_2_change in total_peers:
+    #                     if len(values[peer_2_change]) > 2:
+    #                         values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][0],''))
+    #                         values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][1],''))
+    # return values
+
+    for unit in unitlist:
+        for box in unit:
+            if len(values[box]) == 2:
+                twin_count = 0
+                for possible_twin in unit:
+                    if values[box] == values[possible_twin] and box != possible_twin:
+                        twin_count += 1
+                        real_twin = possible_twin
+                if twin_count == 1:
+                    ltr1 = values[box][0]
+                    ltr2 = values[box][1] 
+                    values = assign_value(values, box, ltr1)
+                    values = assign_value(values, real_twin, ltr2)
     return values
 
 
