@@ -1,6 +1,6 @@
 
 from utils import *
-
+import itertools
 
 row_units = [cross(r, cols) for r in rows]
 column_units = [cross(rows, c) for c in cols]
@@ -46,21 +46,37 @@ def naked_twins(values):
     #                         values = assign_value(values, peer_2_change, values[peer_2_change].replace(values[box][1],''))
     # return values
 
-    for unit in unitlist:
-        for box in unit:
-            if len(values[box]) == 2:
-                twin_count = 0
-                for possible_twin in unit:
-                    if values[box] == values[possible_twin] and box != possible_twin:
-                        twin_count += 1
-                        real_twin = possible_twin
-                if twin_count == 1:
-                    ltr1 = values[box][0]
-                    ltr2 = values[box][1] 
-                    values = assign_value(values, box, ltr1)
-                    values = assign_value(values, real_twin, ltr2)
-    return values
+    # for unit in unitlist:
+    #     for box in unit:
+    #         if len(values[box]) == 2:
+    #             twin_count = 0
+    #             for possible_twin in unit:
+    #                 if values[box] == values[possible_twin] and box != possible_twin:
+    #                     twin_count += 1
+    #                     real_twin = possible_twin
+    #             if twin_count == 1:
+    #                 ltr1 = values[box][0]
+    #                 ltr2 = values[box][1] 
+    #                 values = assign_value(values, box, ltr1)
+    #                 values = assign_value(values, real_twin, ltr2)
+    # return values
 
+    for unit in unitlist:
+        # Find all boxes with two digits remaining as possibilities
+        pairs = [box for box in unit if len(values[box]) == 2]
+        # Pairwise combinations
+        poss_twins = [list(pair) for pair in itertools.combinations(pairs, 2)]
+        for pair in poss_twins:
+            box1 = pair[0]
+            box2 = pair[1]
+            # Find the naked twins
+            if values[box1] == values[box2]:
+                for box in unit:
+                    # Eliminate the naked twins as possibilities for peers
+                    if box != box1 and box != box2:
+                        for digit in values[box1]:
+                            values[box] = values[box].replace(digit,'')
+    return values
 
 def eliminate(values):
     """Apply the eliminate strategy to a Sudoku puzzle
